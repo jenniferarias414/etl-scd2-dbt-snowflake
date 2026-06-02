@@ -1,9 +1,17 @@
+# dbt project configuration for the SCD Type 2 Snowflake project.
+#
+# This clean portfolio copy mirrors the dbt Cloud work from the lab, but keeps
+# only the project-specific files needed to understand the SCD2 flow.
+
 name: "etl_scd2_dbt_snowflake"
 version: "1.0.0"
 config-version: 2
 
+# This profile name is a placeholder for local dbt use.
+# In dbt Cloud, connection/profile settings are managed by the dbt Cloud UI.
 profile: "etl_scd2_dbt_snowflake"
 
+# Tell dbt where to find models, macros, and snapshots.
 model-paths: ["models"]
 macro-paths: ["macros"]
 snapshot-paths: ["snapshots"]
@@ -12,6 +20,22 @@ clean-targets:
   - "target"
   - "dbt_packages"
 
+# Project variables used by the copy macro.
+#
+# wrk_schema:
+#   Snowflake schema where the raw working copy table lives.
+#
+# file_format_name:
+#   Snowflake file format used to read Product_Dim CSV files from the stage.
+#
+# purge_status:
+#   FALSE keeps files in S3 after COPY INTO. TRUE would remove them after load.
+#
+# stage_name:
+#   Snowflake external stage pointing to the S3 raw_data/ folder.
+#
+# rawhist_db:
+#   Snowflake database used for the raw/bronze working table.
 vars:
   wrk_schema: BRONZE
   file_format_name: SCD2_DB.BRONZE.SCD2_CSV_FORMAT
@@ -19,6 +43,13 @@ vars:
   stage_name: SCD2_DB.BRONZE.SCD2_STAGE
   rawhist_db: SCD2_DB
 
+# Model configuration by layer.
+#
+# Silver:
+#   Creates a transformed working table from the bronze copy table.
+#
+# Gold:
+#   Creates a reporting-friendly view on top of the dbt snapshot table.
 models:
   etl_scd2_dbt_snowflake:
     scd2_product:
@@ -29,6 +60,11 @@ models:
         +materialized: view
         +schema: GOLD
 
+# Snapshot configuration.
+#
+# dbt snapshots track changes over time. This is the core SCD Type 2 behavior:
+# when selected product fields change, dbt expires the old row and creates a
+# new current row with updated valid_from / valid_to timestamps.
 snapshots:
   etl_scd2_dbt_snowflake:
     scd2_product:
