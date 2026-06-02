@@ -1,0 +1,5 @@
+version: 2
+
+models:
+  - name: product_view
+    description: "Gold view exposing SCD Type 2 product dimension history."

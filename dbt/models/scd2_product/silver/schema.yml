@@ -1,0 +1,13 @@
+version: 2
+
+sources:
+  - name: bronze
+    database: SCD2_DB
+    schema: BRONZE
+    tables:
+      - name: WORK_PRODUCT_COPY
+        description: "Raw product copy table loaded from S3 stage."
+
+models:
+  - name: transform_product_load
+    description: "Silver transform table for product dimension data."
