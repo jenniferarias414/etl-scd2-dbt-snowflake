@@ -1,0 +1,35 @@
+# Private notes and course material
+notes/private/
+
+# Local/course-provided data files
+data/local/
+*.csv
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+
+# Credentials
+*.pem
+*.key
+credentials.json
+config.json
+
+# dbt
+target/
+dbt_packages/
+logs/
+profiles.yml
+
+# OS/editor
+.DS_Store
+.vscode/
+.idea/
+
+# Outputs
+output/
+*.parquet
+*.json
