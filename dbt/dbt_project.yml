@@ -1,0 +1,35 @@
+name: "etl_scd2_dbt_snowflake"
+version: "1.0.0"
+config-version: 2
+
+profile: "etl_scd2_dbt_snowflake"
+
+model-paths: ["models"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+vars:
+  wrk_schema: BRONZE
+  file_format_name: SCD2_DB.BRONZE.SCD2_CSV_FORMAT
+  purge_status: FALSE
+  stage_name: SCD2_DB.BRONZE.SCD2_STAGE
+  rawhist_db: SCD2_DB
+
+models:
+  etl_scd2_dbt_snowflake:
+    scd2_product:
+      silver:
+        +materialized: table
+        +schema: SILVER
+      gold:
+        +materialized: view
+        +schema: GOLD
+
+snapshots:
+  etl_scd2_dbt_snowflake:
+    scd2_product:
+      +target_schema: SNAPSHOTS
